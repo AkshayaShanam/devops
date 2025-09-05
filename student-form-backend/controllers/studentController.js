@@ -14,7 +14,7 @@ exports.addStudent = (req, res) => {
          console.error("❌ Insert error:", err); // Debugging
          return res.status(500).json({ error: err.message });
       }
-        res.status(201).json({ message: "Student added successfully!" });
+        res.status(201).json({ message: "Student Registered!" });
     }
   );
 };
