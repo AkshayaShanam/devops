@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { addStudent, getStudents } = require("../controllers/studentController");
 
-router.post("/students", addStudent);
-router.get("/students", getStudents);
+// no "students" here, since it's already prefixed in server.js
+router.post("/", addStudent);
+router.get("/", getStudents);
 
 module.exports = router;
