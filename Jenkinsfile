@@ -8,7 +8,7 @@ pipeline {
     environment {
         DB_HOST = "localhost"
         DB_USER = "root"
-        DB_PASS = "yourpassword"
+        DB_PASS = "Akshaya@10"
         DB_NAME = "studentdb"
     }
 
