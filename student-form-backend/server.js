@@ -5,10 +5,20 @@ require("dotenv").config();
 const studentRoutes = require("./routes/studentRoutes");
 
 const app = express();
+
+// Middleware
 app.use(cors());
-app.use(express.json()); // replaces body-parser
+app.use(express.json());
 
-app.use("/api", studentRoutes);
+// Routes
+app.use("/api/students", studentRoutes);
 
+// Start server only if not in test mode
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app; // 👈 export app for tests
