@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS"   // Make sure you configured NodeJS in Jenkins Global Tool Configuration
+        nodejs "NodeJS"   // Make sure NodeJS is configured in Jenkins Global Tool Configuration
     }
 
     environment {
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 dir('student-form-backend') {
                     echo "📦 Installing backend dependencies..."
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
                 // If your frontend is plain HTML/JS, skip npm install
                 // If React or Node-based frontend:
                 // dir('frontend') {
-                //     sh 'npm install'
+                //     bat 'npm install'
                 // }
             }
         }
@@ -44,7 +44,9 @@ pipeline {
             steps {
                 dir('student-form-backend') {
                     echo "🧪 Running backend tests..."
-                    sh 'npm test || echo "⚠️ No tests found, skipping..."'
+                    // Windows `bat` doesn’t support `|| echo ...` directly
+                    // So use "cmd /c" to allow conditional
+                    bat 'cmd /c "npm test || echo ⚠️ No tests found, skipping..."'
                 }
             }
         }
@@ -54,7 +56,7 @@ pipeline {
                 echo "🏗️ Building frontend..."
                 // If React/Angular/Vue, use build command
                 // dir('frontend') {
-                //     sh 'npm run build'
+                //     bat 'npm run build'
                 // }
             }
         }
@@ -63,7 +65,8 @@ pipeline {
             steps {
                 echo "🚀 Starting server..."
                 dir('student-form-backend') {
-                    sh 'nohup npm start &'
+                    // nohup doesn’t exist on Windows, use "start" instead
+                    bat 'start cmd /c "npm start"'
                 }
             }
         }
