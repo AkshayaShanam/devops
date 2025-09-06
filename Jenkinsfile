@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     tools {
+        git "Git"
         nodejs "NodeJS"   // Make sure NodeJS is configured in Jenkins Global Tool Configuration
     }
 
@@ -70,6 +71,13 @@ pipeline {
                 }
             }
         }
+
+        stage('Verify Server') {
+                steps {
+                    bat 'curl http://localhost:3000 || echo "⚠️ Server not responding"'
+            }
+        }
+
     }
 
     post {
