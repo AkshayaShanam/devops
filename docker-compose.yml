@@ -1,5 +1,3 @@
-
-
 services:
   backend:
     build: ./student-form-backend
@@ -11,8 +9,10 @@ services:
       - DB_USER=root
       - DB_PASSWORD=Akshaya@10
       - DB_NAME=studentdb
+      - DB_PORT=3306
     depends_on:
-      - db
+      db:
+        condition: service_healthy   # 👈 wait for db to be healthy
 
   db:
     image: mysql:8.0
@@ -21,9 +21,15 @@ services:
       MYSQL_ROOT_PASSWORD: Akshaya@10
       MYSQL_DATABASE: studentdb
     ports:
-      - "3307:3306" # map container's 3306 to local 3307
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:   # 👈 add this
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pAkshaya@10"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 volumes:
   db_data:
