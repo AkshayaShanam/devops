@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./student-form-backend
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=Akshaya@10
+      - DB_NAME=studentdb
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Akshaya@10
+      MYSQL_DATABASE: studentdb
+    ports:
+      - "3307:3306" # map container's 3306 to local 3307
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
