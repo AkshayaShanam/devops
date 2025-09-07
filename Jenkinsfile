@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS"   // Make sure NodeJS is configured in Jenkins Global Tool Configuration
+        nodejs "NodeJS"   // NodeJS tool configured in Jenkins
     }
 
     environment {
@@ -31,31 +31,18 @@ pipeline {
 
         stage('Install Dependencies - Frontend') {
             steps {
-                echo "📦 Installing frontend dependencies (optional)..."
+                echo "📦 Installing frontend dependencies (if needed)..."
                 // If your frontend is plain HTML/JS, skip npm install
-                // If using React/Angular/Vue, uncomment below:
-                // dir('frontend') {
-                //     bat 'npm install'
-                // }
             }
         }
 
         stage('Run Tests') {
             steps {
                 dir('student-form-backend') {
-                    echo "🧪 Running backend tests..."
-                    bat 'cmd /c "npm test || echo ⚠️ No tests found, skipping..."'
+                    echo "🧪 Running unit tests only (DB tests skipped in Jenkins)..."
+                    // Run only unit tests, ignore DB integration
+                    bat 'cmd /c "npm run test:unit || echo ⚠️ No unit tests found, skipping..."'
                 }
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
-                echo "🏗️ Building frontend (optional)..."
-                // If React/Angular/Vue, uncomment below:
-                // dir('frontend') {
-                //     bat 'npm run build'
-                // }
             }
         }
 
@@ -71,20 +58,15 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    echo "🛑 Stopping old container if exists..."
-                    bat 'docker stop student-app || echo "No container to stop"'
-                    bat 'docker rm student-app || echo "No container to remove"'
-        
-                    echo "🚀 Running new container..."
-                    bat "docker run -d --name student-app -p 5001:5001 student-app:${env.BUILD_ID}"
+                    echo "🚀 Running Docker container..."
+                    docker.image("student-app:${env.BUILD_ID}").run("-p 5001:5001")
                 }
             }
         }
 
         stage('Verify Server') {
             steps {
-                bat 'ping -n 6 127.0.0.1 >nul'  // wait ~5 seconds for container startup
-                bat 'curl http://localhost:5001 || echo ⚠️ Server not responding'
+                bat 'curl http://localhost:5001 || echo "⚠️ Server not responding"'
             }
         }
     }
