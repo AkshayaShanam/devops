@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     tools {
-        git "Git"
         nodejs "NodeJS"   // Make sure NodeJS is configured in Jenkins Global Tool Configuration
     }
 
@@ -32,9 +31,9 @@ pipeline {
 
         stage('Install Dependencies - Frontend') {
             steps {
-                echo "📦 Installing frontend dependencies (if needed)..."
+                echo "📦 Installing frontend dependencies (optional)..."
                 // If your frontend is plain HTML/JS, skip npm install
-                // If React or Node-based frontend:
+                // If using React/Angular/Vue, uncomment below:
                 // dir('frontend') {
                 //     bat 'npm install'
                 // }
@@ -45,8 +44,6 @@ pipeline {
             steps {
                 dir('student-form-backend') {
                     echo "🧪 Running backend tests..."
-                    // Windows `bat` doesn’t support `|| echo ...` directly
-                    // So use "cmd /c" to allow conditional
                     bat 'cmd /c "npm test || echo ⚠️ No tests found, skipping..."'
                 }
             }
@@ -54,30 +51,38 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                echo "🏗️ Building frontend..."
-                // If React/Angular/Vue, use build command
+                echo "🏗️ Building frontend (optional)..."
+                // If React/Angular/Vue, uncomment below:
                 // dir('frontend') {
                 //     bat 'npm run build'
                 // }
             }
         }
 
-        stage('Deploy') {
+        stage('Build Docker Image') {
             steps {
-                echo "🚀 Starting server..."
-                dir('student-form-backend') {
-                    // nohup doesn’t exist on Windows, use "start" instead
-                    bat 'start cmd /c "npm start"'
+                script {
+                    echo "🐳 Building Docker image..."
+                    docker.build("student-app:${env.BUILD_ID}", "student-form-backend")
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    echo "🚀 Running backend container..."
+                    docker.image("student-app:${env.BUILD_ID}").run("-p 5001:5001")
                 }
             }
         }
 
         stage('Verify Server') {
-                steps {
-                    bat 'curl http://localhost:3000 || echo "⚠️ Server not responding"'
+            steps {
+                bat 'ping -n 6 127.0.0.1 >nul'  // wait ~5 seconds for container startup
+                bat 'curl http://localhost:5001 || echo ⚠️ Server not responding'
             }
         }
-
     }
 
     post {
