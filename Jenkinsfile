@@ -71,8 +71,12 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    echo "🚀 Running backend container..."
-                    docker.image("student-app:${env.BUILD_ID}").run("-p 5001:5001")
+                    echo "🛑 Stopping old container if exists..."
+                    bat 'docker stop student-app || echo "No container to stop"'
+                    bat 'docker rm student-app || echo "No container to remove"'
+        
+                    echo "🚀 Running new container..."
+                    bat "docker run -d --name student-app -p 5001:5001 student-app:${env.BUILD_ID}"
                 }
             }
         }
