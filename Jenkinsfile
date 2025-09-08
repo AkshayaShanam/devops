@@ -45,7 +45,12 @@ pipeline {
                 }
             }
         }
-
+        stage('Cleanup') {
+            steps {
+                echo "🧹 Cleaning old containers and images..."
+                bat 'docker rm -f $(docker ps -aq) || echo "No containers to remove"'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
