@@ -47,8 +47,14 @@ pipeline {
         }
         stage('Cleanup') {
             steps {
-                echo "🧹 Cleaning old containers and images..."
-                bat 'docker rm -f $(docker ps -aq) || echo "No containers to remove"'
+                echo "🧹 Cleaning old containers..."
+                bat '''
+                for /f "tokens=*" %%i in ('docker ps -aq') do docker rm -f %%i
+                '''
+                echo "🧹 Cleaning old images..."
+                bat '''
+                for /f "tokens=*" %%i in ('docker images -q') do docker rmi -f %%i
+                '''
             }
         }
         stage('Build Docker Image') {
