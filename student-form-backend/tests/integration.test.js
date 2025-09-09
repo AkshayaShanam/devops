@@ -1,5 +1,6 @@
 const request = require("supertest");
 const app = require("../server");
+const db = require("../config/db");
 
 describe("Student API Integration Tests", () => {
   it("should insert a new student", async () => {
