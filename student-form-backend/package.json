@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-  "start": "node server.js",
-  "dev": "cross-env NODE_ENV=development dotenv -e .env.local nodemon server.js",
-  "test": "cross-env NODE_ENV=test dotenv -e .env.local jest --detectOpenHandles",
-  "docker:start": "docker-compose up --build",
-  "docker:down": "docker-compose down -v"
+    "start": "node server.js",
+    "dev": "cross-env NODE_ENV=development dotenv -e .env.local nodemon server.js",
+    "test": "cross-env NODE_ENV=test dotenv -e .env.local jest --detectOpenHandles",
+    "docker:start": "docker-compose up --build",
+    "docker:down": "docker-compose down -v"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,8 @@
     "mysql2": "^3.14.4"
   },
   "devDependencies": {
+    "cross-env": "^10.0.0",
+    "dotenv-cli": "^10.0.0",
     "jest": "^30.1.3",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4"
