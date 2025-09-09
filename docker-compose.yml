@@ -3,13 +3,8 @@ services:
     build: ./student-form-backend
     ports:
       - "5001:5001"
-    environment:
-      - PORT=5001
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=Akshaya@10
-      - DB_NAME=studentdb
-      - DB_PORT=3306
+    env_file:                # 👈 Use env_file here
+      - ./student-form-backend/.env.docker
     depends_on:
       - db
     command: sh -c "sleep 15 && node server.js"   # 👈 Add here
@@ -17,9 +12,8 @@ services:
   db:
     image: mysql:8.0
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: Akshaya@10
-      MYSQL_DATABASE: studentdb
+    env_file:                # 👈 Optional: can also load DB creds from env file
+      - ./student-form-backend/.env.docker
     ports:
       - "3307:3306"
     volumes:
