@@ -22,3 +22,8 @@ describe("Student API Integration Tests", () => {
     expect(Array.isArray(res.body)).toBe(true);
   });
 });
+
+// ✅ Close DB pool after tests
+afterAll(async () => {
+  await db.end();
+});
