@@ -49,3 +49,15 @@ exports.addStudent = (req, res) => {
     res.status(500).json({ error: e.message });
   }
 };
+
+// ✅ Add this:
+exports.getStudents = (req, res) => {
+  const sql = "SELECT * FROM students";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("❌ Fetch error:", err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
+};
