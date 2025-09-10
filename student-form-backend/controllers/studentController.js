@@ -4,7 +4,6 @@ exports.addStudent = (req, res) => {
   console.log("📥 Incoming raw body:", req.body);
 
   try {
-    // Normalize keys + provide safe defaults
     const student_id = req.body.student_id || req.body.studentId || "";
     const name = req.body.name || "";
     const email = req.body.email || "";
@@ -50,7 +49,6 @@ exports.addStudent = (req, res) => {
   }
 };
 
-// ✅ Add this:
 exports.getStudents = (req, res) => {
   const sql = "SELECT * FROM students";
   db.query(sql, (err, results) => {
