@@ -31,18 +31,22 @@ exports.addStudent = (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.query(
-      sql,
-      [student_id, name, email, course, mobile_no, gender, dob, passout_year, address],
-      (err, result) => {
-        if (err) {
-          console.error("❌ Insert error:", err);
-          return res.status(500).json({ error: err.message });
-        }
+  sql,
+  [student_id, name, email, course, mobile_no, gender, dob, passout_year, address],
+  (err, result) => {
+    if (err) {
+      console.error("❌ Insert error code:", err.code);
+      console.error("❌ Insert error SQL:", err.sqlMessage);
+      console.error("❌ Inserted values:", [
+        student_id, name, email, course, mobile_no, gender, dob, passout_year, address
+      ]);
+      return res.status(500).json({ error: err.message });
+    }
+    console.log("✅ Insert result:", result);
+    res.status(201).json({ message: "Student Registered!", id: result.insertId });
+  }
+);
 
-        console.log("✅ Insert result:", result);
-        res.status(201).json({ message: "Student Registered!", id: result.insertId });
-      }
-    );
   } catch (e) {
     console.error("❌ Unexpected error:", e);
     res.status(500).json({ error: e.message });
